@@ -17,9 +17,9 @@ class ReviewFactory extends Factory
     public function definition()
     {
         return [
-            'number_of_stars' => fake()->rand(1,5),
-            'book_id' => fake()->rand(1,50),
-            'user_id' => fake()->rand(1,50),
+            'number_of_stars' => rand(1,5),
+            'book_id' => rand(1,50),
+            'user_id' => rand(1,50),
             'review' =>fake()->sentence(10),
         ];
     }

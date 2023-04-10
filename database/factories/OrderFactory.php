@@ -17,9 +17,9 @@ class OrderFactory extends Factory
     public function definition()
     {
         return [
-            'book_id' => fake()->rand(1,50),
-            'user_id' => fake()->rand(1,50),
-            'quantity' => fake()->rand(1,3),
+            'book_id' => rand(1,50),
+            'user_id' => rand(1,50),
+            'quantity' => rand(1,3),
         ];
     }
 }

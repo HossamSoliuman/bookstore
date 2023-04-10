@@ -17,8 +17,8 @@ class BookLanguageFactory extends Factory
     public function definition()
     {
         return [
-            'book_id' => fake()->rand(1,50),
-            'language_id' => fake()->rand(1,5),
+            'book_id' => rand(1,50),
+            'language_id' => rand(1,5),
         ];
     }
 }

@@ -17,8 +17,8 @@ class BookCategoryFactory extends Factory
     public function definition()
     {
         return [
-            'book_id' => fake()->rand(1,50),
-            'category_id' => fake()->rand(1,8),
+            'book_id' => rand(1,50),
+            'category_id' => rand(1,8),
         ];
     }
 }
