@@ -2,14 +2,24 @@
 
 namespace App\Models;
 
+use App\Models\Language as ModelsLanguage;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use JetBrains\PhpStorm\Language;
 use PharIo\Manifest\Author;
 
 class Book extends Model
 {
     use HasFactory;
+
+    protected $fillable=[
+        'title',
+        'price',
+        'details',
+        'publisher',
+        'description',
+    ];
+
+
     public function authors(){
         return $this->belongsToMany(Author::class);
     }
@@ -17,7 +27,7 @@ class Book extends Model
         return $this->belongsToMany(Category::class);
     }
     public function languages(){
-        return $this->belongsToMany(Language::class);
+        return $this->belongsToMany(ModelsLanguage::class);
     }
     public function reviews(){
         return $this->hasMany(Review::class);

@@ -17,7 +17,8 @@ class AuthorsFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'name' => fake()->userName(),
+            'about' => fake()->sentence(20),
         ];
     }
 }

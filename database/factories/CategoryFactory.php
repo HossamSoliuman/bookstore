@@ -14,10 +14,13 @@ class CategoryFactory extends Factory
      *
      * @return array<string, mixed>
      */
+
     public function definition()
     {
+         $book_categories = array("Fiction", "Non-Fiction", "Mystery", "Romance", "Sci-Fi", "Biography", "History", "Travel");
+
         return [
-            //
+            'name'=> fake()->randomElement($book_categories),
         ];
     }
 }
