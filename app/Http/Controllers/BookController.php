@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\BookCreateRequest;
+use App\Http\Resources\BookResource;
 use App\Models\Book;
-use Illuminate\Http\Request;
+use App\Traits\ApiResponse;
 
 class BookController extends Controller
 {
@@ -12,9 +14,12 @@ class BookController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    use ApiResponse;
     public function index()
     {
-        //
+        $books= BookResource::collection(Book::all());
+        return $this->successResponse('',$books);
+       
     }
 
     /**
@@ -23,9 +28,10 @@ class BookController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(BookCreateRequest $request)
     {
-        //
+        Book::create($request->all());
+       return $this->successResponse('successfully created');
     }
 
     /**
@@ -36,7 +42,7 @@ class BookController extends Controller
      */
     public function show(Book $book)
     {
-        //
+        return $this->successResponse('',BookResource::make($book));
     }
 
     /**
@@ -46,9 +52,10 @@ class BookController extends Controller
      * @param  \App\Models\Book  $book
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Book $book)
+    public function update(BookCreateRequest $request, Book $book)
     {
-        //
+        $book->update($request->all());
+        return $this->successResponse('Successfully updated',BookResource::make($book));
     }
 
     /**
@@ -59,6 +66,9 @@ class BookController extends Controller
      */
     public function destroy(Book $book)
     {
-        //
+        $book->delete();
+        return $this->successResponse('Successfully deleted');
+
     }
+    
 }

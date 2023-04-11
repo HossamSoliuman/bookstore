@@ -21,13 +21,13 @@ class Book extends Model
 
 
     public function authors(){
-        return $this->belongsToMany(Author::class);
+        return $this->belongsToMany(Author::class,'author_books');
     }
     public function categories(){
-        return $this->belongsToMany(Category::class);
+        return $this->belongsToMany(Category::class,'book_categories');
     }
     public function languages(){
-        return $this->belongsToMany(ModelsLanguage::class);
+        return $this->belongsToMany(ModelsLanguage::class,'book_languages');
     }
     public function reviews(){
         return $this->hasMany(Review::class);

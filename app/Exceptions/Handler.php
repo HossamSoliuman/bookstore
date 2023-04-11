@@ -2,12 +2,14 @@
 
 namespace App\Exceptions;
 
-use Illuminate\Auth\AuthenticationException;
+use App\Traits\ApiResponse;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 
 class Handler extends ExceptionHandler
 {
+    use ApiResponse;
     /**
      * A list of exception types with their corresponding custom log levels.
      *
@@ -50,9 +52,13 @@ class Handler extends ExceptionHandler
     }
     public function render($request, Throwable $exception)
     {
-        if ($exception instanceof AuthenticationException) {
-            return response()->json(['error' => 'Unauthenticated.'], 401);
+        
+       
+        if ($exception instanceof ModelNotFoundException) {
+            return $this->errorResponse('The resource was not found.', null, 404);
         }
+    
+    
 
         return parent::render($request, $exception);
     }

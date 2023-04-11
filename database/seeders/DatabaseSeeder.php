@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
-use App\Models\Authors;
+use App\Models\Author;
 use App\Models\Book;
 use App\Models\BookCategory;
 use App\Models\BookLanguage;
@@ -27,7 +27,7 @@ class DatabaseSeeder extends Seeder
         $this->call(LanguageSeeder::class);
         User::factory(50)->create();
         $this->call(AdminSeeder::class);
-        Authors::factory(50)->create();
+        Author::factory(50)->create();
         Book::factory(50)->create();
         
         

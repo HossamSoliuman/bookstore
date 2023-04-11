@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\BookResource;
 use App\Models\Category;
+use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
+    use ApiResponse;
+
     /**
      * Display a listing of the resource.
      *
@@ -14,7 +18,8 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        //
+        $categories = Category::all();
+        return $this->successResponse('', $categories);
     }
 
     /**
@@ -25,7 +30,15 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+            'name' => 'required|string'
+        ]);
+
+        $category = Category::create([
+            'name' => $validatedData['name'],
+        ]);
+
+        return $this->successResponse('Category created successfully', $category);
     }
 
     /**
@@ -36,7 +49,12 @@ class CategoryController extends Controller
      */
     public function show(Category $category)
     {
-        //
+        $CategoriesWithBooks = [
+            'id' => $category->id,
+            'name' => $category->name,
+            'books' => BookResource::collection($category->books),
+        ];
+        return $this->successResponse('', $CategoriesWithBooks);
     }
 
     /**
@@ -48,7 +66,15 @@ class CategoryController extends Controller
      */
     public function update(Request $request, Category $category)
     {
-        //
+        $validatedData = $request->validate([
+            'name' => 'required|string'
+        ]);
+
+        $category->update([
+            'name' => $validatedData['name'],
+        ]);
+
+        return $this->successResponse('Category updated successfully', $category);
     }
 
     /**
@@ -59,6 +85,7 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        //
+        $category->delete();
+        return $this->successResponse('Category deleted successfully');
     }
 }
