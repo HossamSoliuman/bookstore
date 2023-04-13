@@ -3,8 +3,10 @@
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\AuthorController;
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\LanguageController;
+use App\Http\Controllers\ReviewController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -34,6 +36,13 @@ Route::middleware(['auth:sanctum','admin'])->group(function(){
         'languages' => LanguageController::class,
         'authors' => AuthorController::class,
 
+
     ],['except'=>['index','show']]);
 
+});
+
+Route::middleware('auth:sanctum')->group(function(){
+    Route::apiResource('carts',CartController::class)->except(['show']);
+    Route::post('/carts/checkout', [CartController::class, 'checkout']);
+    Route::apiResource('reviews',ReviewController::class)->except(['show','index']);
 });

@@ -31,7 +31,7 @@ class DatabaseSeeder extends Seeder
         Book::factory(50)->create();
         
         
-        Cart::factory(50)->create();
+        Cart::factory(500)->create();
         Order::factory(2000)->create();
         Review::factory(500)->create();
         BookCategory::factory(100)->create();

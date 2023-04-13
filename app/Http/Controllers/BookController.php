@@ -42,7 +42,8 @@ class BookController extends Controller
      */
     public function show(Book $book)
     {
-        return $this->successResponse('',BookResource::make($book));
+        $bookWithReviews=$book->load('reviews');     
+        return $this->successResponse('', BookResource::make($bookWithReviews));
     }
 
     /**

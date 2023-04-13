@@ -19,6 +19,7 @@ class CartFactory extends Factory
         return [
             'book_id' => rand(1,50),
             'user_id' => rand(1,50),
+            'quantity' => rand(1,3),
         ];
     }
 }

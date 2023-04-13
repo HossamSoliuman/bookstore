@@ -3,20 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Review;
+use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 
 class ReviewController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
+    use ApiResponse;
 
+   
     /**
      * Store a newly created resource in storage.
      *
@@ -25,18 +19,18 @@ class ReviewController extends Controller
      */
     public function store(Request $request)
     {
-        //
-    }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Review  $review
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Review $review)
-    {
-        //
+        $validatedData = $request->validate([
+            'number_of_stars' => 'required|integer|min:1|max:5',
+            'book_id' => 'required|integer|exists:books,id',
+            'review' => 'nullable|string',
+        ]);
+        
+        $validatedData['user_id'] = $request->user()->id;
+
+        $review = Review::create($validatedData);
+
+        return $this->successResponse('Review created successfully', $review);
     }
 
     /**
@@ -48,7 +42,14 @@ class ReviewController extends Controller
      */
     public function update(Request $request, Review $review)
     {
-        //
+        $validatedData = $request->validate([
+            'number_of_stars' => 'nullable|integer|min:1|max:5',
+            'review' => 'nullable|string',
+        ]);
+
+        $review->update($validatedData);
+
+        return $this->successResponse('Review updated successfully', $review);
     }
 
     /**
@@ -59,6 +60,8 @@ class ReviewController extends Controller
      */
     public function destroy(Review $review)
     {
-        //
+        $review->delete();
+
+        return $this->successResponse('Review deleted successfully');
     }
 }
