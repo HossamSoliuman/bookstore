@@ -21,6 +21,8 @@ class BookResource extends JsonResource
             'details' => $this->details,
             'publisher' => $this->publisher,
             'description' => $this->description,
+            'cover_url' => $this->cover_url,
+            'book_url' => $this->book_url,
             'created_at' => Carbon::parse($this->created_at)->format('Y m d H:m A'),
             'reviews' => ReviewResource::collection($this->reviews),
         ];

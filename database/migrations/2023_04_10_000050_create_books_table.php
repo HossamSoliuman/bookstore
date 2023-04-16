@@ -20,6 +20,8 @@ return new class extends Migration
             $table->text('details');
             $table->string('publisher');
             $table->text('description');
+            $table->string('cover_url')->nullable();
+            $table->string('book_url')->nullable();
             $table->timestamps();
         });
     }

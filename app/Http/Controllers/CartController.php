@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\BookResource;
 use App\Models\Cart;
+use App\Models\Order;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 
@@ -80,8 +81,13 @@ class CartController extends Controller
     
         foreach ($carts as $cart) {
             $total += $cart->book->price * $cart->quantity;
+            Order::create([
+                'user_id' => $userId,
+                'book_id' => $cart->book->id,
+                'quantity' => $cart->quantity,
+            ]);
         }
-    
+        
         $carts->each->delete();
     
         return $this->successResponse('Checkout successful', ['total' => $total]);

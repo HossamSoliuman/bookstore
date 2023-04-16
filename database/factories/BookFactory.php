@@ -18,10 +18,12 @@ class BookFactory extends Factory
     {
         return [
             'title' => fake()->sentence(4),
-            'price' => rand(20,70),
+            'price' => rand(20, 70),
             'details' => fake()->text(),
             'publisher' => fake()->sentence(2),
             'description' => fake()->text(),
+            'cover_url' => 'book_covers/cover.png',
+            'book_url' => 'books/book.pdf',
         ];
     }
 }

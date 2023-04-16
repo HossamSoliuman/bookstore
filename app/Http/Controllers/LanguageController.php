@@ -1,12 +1,12 @@
 <?php
 namespace App\Http\Controllers;
 
-use App\Http\Resources\BookResource;
-use App\Models\Author;
+use App\Http\Resources\UserResource;
+use App\Models\User;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 
-class AuthorController extends Controller
+class UserController extends Controller
 {
     use ApiResponse;
 
@@ -17,8 +17,8 @@ class AuthorController extends Controller
      */
     public function index()
     {
-        $authors = Author::all();
-        return $this->successResponse('', $authors);
+        $users = User::all();
+        return $this->successResponse('Users retrieved successfully', $users);
     }
 
     /**
@@ -31,66 +31,68 @@ class AuthorController extends Controller
     {
         $validatedData = $request->validate([
             'name' => 'required|string',
-            'about' => 'required|string',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|min:6',
         ]);
 
-        $author = Author::create([
+        $user = User::create([
             'name' => $validatedData['name'],
-            'about' => $validatedData['about'],
+            'email' => $validatedData['email'],
+            'password' => bcrypt($validatedData['password']),
         ]);
 
-        return $this->successResponse('Author created successfully', $author);
+        return $this->successResponse('User created successfully', $user);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Author  $author
+     * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function show(Author $author)
+    public function show(User $user)
     {
-        $authorWithBooks = [
-            'id' => $author->id,
-            'name' => $author->name,
-            'about' => $author->about,
-            'books' => BookResource::collection($author->books),
-        ];
-
-        return $this->successResponse('', $authorWithBooks);
+        $userData = new UserResource($user);
+        return $this->successResponse('User retrieved successfully', $userData);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Author  $author
+     * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Author $author)
+    public function update(Request $request, User $user)
     {
         $validatedData = $request->validate([
             'name' => 'sometimes|required|string',
-            'about' => 'sometimes|required|string',
+            'email' => 'sometimes|required|email|unique:users,email,' . $user->id,
+            'password' => 'sometimes|required|min:6',
         ]);
 
-        $author->update([
-            'name' => $validatedData['name'] ?? $author->name,
-            'about' => $validatedData['about'] ?? $author->about,
-        ]);
+        $user->name = $validatedData['name'] ?? $user->name;
+        $user->email = $validatedData['email'] ?? $user->email;
 
-        return $this->successResponse('Author updated successfully', $author);
+        if (isset($validatedData['password'])) {
+            $user->password = bcrypt($validatedData['password']);
+        }
+
+        $user->save();
+
+        $userData = new UserResource($user);
+        return $this->successResponse('User updated successfully', $userData);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Author  $author
+     * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Author $author)
+    public function destroy(User $user)
     {
-        $author->delete();
-        return $this->successResponse('Author deleted successfully');
+        $user->delete();
+        return $this->successResponse('User deleted successfully');
     }
 }

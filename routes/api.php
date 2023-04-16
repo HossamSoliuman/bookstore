@@ -7,6 +7,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,30 +20,44 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::post('login',[AuthenticationController::class,'login']);
-Route::post('register',[AuthenticationController::class,'register']);
+
+Route::view('/test', 'welcome');
+//authentication
+
+Route::post('login', [AuthenticationController::class, 'login']);
+Route::post('register', [AuthenticationController::class, 'register']);
+
+//public singls 
+
+Route::get('books/stars/{book}', [BookController::class, 'getBookReviewsRate']);
+Route::get('books/orders/{book}', [BookController::class, 'bookOrders']);
+
+//public resources
 
 Route::apiResources([
     'books' => BookController::class,
     'categories' => CategoryController::class,
     'languages' => LanguageController::class,
     'authors' => AuthorController::class,
-],['only'=>['index','show']]);
+], ['only' => ['index', 'show']]);
 
-Route::middleware(['auth:sanctum','admin'])->group(function(){
+// auth
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::apiResource('carts', CartController::class)->except(['show']);
+    Route::post('/carts/checkout', [CartController::class, 'checkout']);
+    Route::apiResource('reviews', ReviewController::class)->except(['show', 'index']);
+    Route::apiResource('users', UserController::class)->only(['show', 'update', 'delete']);
+});
+
+//admin auth
+
+Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::apiResources([
         'books' => BookController::class,
         'categories' => CategoryController::class,
         'languages' => LanguageController::class,
         'authors' => AuthorController::class,
-
-
-    ],['except'=>['index','show']]);
-
-});
-
-Route::middleware('auth:sanctum')->group(function(){
-    Route::apiResource('carts',CartController::class)->except(['show']);
-    Route::post('/carts/checkout', [CartController::class, 'checkout']);
-    Route::apiResource('reviews',ReviewController::class)->except(['show','index']);
+    ], ['except' => ['index', 'show']]);
+    Route::apiResource('users', UserController::class)->only('index');
 });

@@ -3,9 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\BookCreateRequest;
+use App\Http\Requests\BookUpdateRequest;
 use App\Http\Resources\BookResource;
+use App\http\Services\BookService;
 use App\Models\Book;
 use App\Traits\ApiResponse;
+use App\Traits\FileUpload;
+use Illuminate\Http\Request;
 
 class BookController extends Controller
 {
@@ -15,11 +19,11 @@ class BookController extends Controller
      * @return \Illuminate\Http\Response
      */
     use ApiResponse;
+    use FileUpload;
     public function index()
     {
-        $books= BookResource::collection(Book::all());
-        return $this->successResponse('',$books);
-       
+        $books = BookResource::collection(Book::all());
+        return $this->successResponse('', $books);
     }
 
     /**
@@ -30,8 +34,17 @@ class BookController extends Controller
      */
     public function store(BookCreateRequest $request)
     {
-        Book::create($request->all());
-       return $this->successResponse('successfully created');
+        return $request->all();
+        $pathToImage = $this->upload($request->file('cover'), 'book_covers');
+        $pathToBook = $this->upload($request->file('book'), 'books');
+
+        $book = Book::create($request->all());
+        $book->update([
+            'cover_url' => str_replace('\\', '/', $pathToImage),
+            'book_url' => str_replace('\\', '/', $pathToBook),
+        ]);
+
+        return $this->successResponse('successfully created', $book);
     }
 
     /**
@@ -42,7 +55,7 @@ class BookController extends Controller
      */
     public function show(Book $book)
     {
-        $bookWithReviews=$book->load('reviews');     
+        $bookWithReviews = $book->load('reviews');
         return $this->successResponse('', BookResource::make($bookWithReviews));
     }
 
@@ -53,12 +66,27 @@ class BookController extends Controller
      * @param  \App\Models\Book  $book
      * @return \Illuminate\Http\Response
      */
-    public function update(BookCreateRequest $request, Book $book)
+    public function update(Request $request, Book $book)
     {
-        $book->update($request->all());
-        return $this->successResponse('Successfully updated',BookResource::make($book));
-    }
 
+        $book->update($request->all());
+        if ($request->hasFile('cover')) {
+            $this->deleteFile($book->cover_url);
+            $book->update([
+                'cover_url' => $this->upload($request->file('cover'), 'book_covers'),
+            ]);
+        }
+
+        if ($request->hasFile('book')) {
+
+            $this->deleteFile($book->book_url);
+            $book->update([
+                'book_url' => $this->upload($request->file('book'), 'books'),
+            ]);
+        }
+
+        return $this->successResponse('Successfully updated', BookResource::make($book));
+    }
     /**
      * Remove the specified resource from storage.
      *
@@ -67,9 +95,21 @@ class BookController extends Controller
      */
     public function destroy(Book $book)
     {
+        $this->deleteFile($book->cover_url);
+        $this->deleteFile($book->book_url);
         $book->delete();
         return $this->successResponse('Successfully deleted');
-
     }
-    
+
+    public function getBookReviewsRate(Book $book)
+    {
+        $bookWithReviews = $book->load('reviews');
+        $rate = $bookWithReviews->reviews->avg('number_of_stars');
+        return $rate;
+    }
+    public function bookOrders(Book $book, BookService $bookService)
+    {
+        $bookWithOrders = $bookService->bookOrders($book);
+        return $this->successResponse('', $bookWithOrders);
+    }
 }

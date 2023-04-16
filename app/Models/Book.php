@@ -17,6 +17,8 @@ class Book extends Model
         'details',
         'publisher',
         'description',
+        'cover_url',
+        'book_url',
     ];
 
 
