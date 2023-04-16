@@ -57,6 +57,7 @@ php artisan serve
 Access the application in your web browser at http://localhost:8000.
 
 ## API Documentation
+https://documenter.getpostman.com/view/26153121/2s93XyTNid
 
 
 ## User Logins
