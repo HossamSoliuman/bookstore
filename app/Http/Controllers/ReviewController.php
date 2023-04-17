@@ -42,6 +42,11 @@ class ReviewController extends Controller
      */
     public function update(Request $request, Review $review)
     {
+        return $request;
+        if($review->user_id != auth()->id())
+        {
+            return $this->errorResponse('unauthorized',null,501);
+        }
         $validatedData = $request->validate([
             'number_of_stars' => 'nullable|integer|min:1|max:5',
             'review' => 'nullable|string',
@@ -60,6 +65,10 @@ class ReviewController extends Controller
      */
     public function destroy(Review $review)
     {
+        if($review->user_id != auth()->id())
+        {
+            return $this->errorResponse('unauthorized',null,501);
+        }
         $review->delete();
 
         return $this->successResponse('Review deleted successfully');

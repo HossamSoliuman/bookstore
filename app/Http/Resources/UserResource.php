@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Auth;
 
 class UserResource extends JsonResource
 {
@@ -14,9 +15,13 @@ class UserResource extends JsonResource
      */
     public function toArray($request)
     {
+        $auth_id = Auth::guard('sanctum')->user()->id;
+        $has_permissions = $this->id == $auth_id ? 1 : 0;
+
         return [
             'name' => $this->name,
             'email' => $this->email,
+            'has_permissions' => $has_permissions,
         ];
     }
 }

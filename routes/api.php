@@ -21,7 +21,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::view('/test', 'welcome');
 //authentication
 
 Route::post('login', [AuthenticationController::class, 'login']);
