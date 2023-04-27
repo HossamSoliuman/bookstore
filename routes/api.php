@@ -44,7 +44,7 @@ Route::apiResources([
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('carts', CartController::class)->except(['show']);
-    Route::post('/carts/checkout', [CartController::class, 'checkout']);
+    Route::post('', [CartController::class, 'checkout']);
     Route::apiResource('reviews', ReviewController::class)->except(['show', 'index']);
     Route::apiResource('users', UserController::class)->only(['show', 'update', 'delete']);
 });
